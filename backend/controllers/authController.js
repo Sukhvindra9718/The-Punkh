@@ -1,33 +1,13 @@
 // authController.js
 const bcrypt = require('bcryptjs');
-const multer = require('multer');
 const pool = require('../db');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const uuid = require('uuid');
-// Multer storage configuration
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Uploads folder for storing profile pictures
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname); // Unique filename
-  }
-});
-
-const upload = multer({ storage: storage }).single('profilePicture');
 
 const registerUser = async (req, res) => {
   try {
-    // File upload
-    upload(req, res, async function (err) {
-      if (err instanceof multer.MulterError) {
-        return res.status(500).json({ message: "Error uploading file", error: err });
-      } else if (err) {
-        return res.status(500).json({ message: "Error uploading file", error: err });
-      }
-      
       // Process user registration
       const { username, password,phonenumber,role } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,7 +15,6 @@ const registerUser = async (req, res) => {
       const newUser = await pool.query('INSERT INTO users (id,username,password,phonenumber,role, profile_picture) VALUES ($1, $2, $3,$4,$5,$6) RETURNING *', [id,username, hashedPassword,phonenumber, role,req.file.path]);
       
       res.json(newUser.rows[0]);
-    });
   } catch (error) {
     res.status(500).send('Server Error');
   }

@@ -8,7 +8,7 @@ module.exports = {
       port: 5432,
     },
     jwtSecret: 'thisissecretconversationroomdontinterfere',
-    PORT : 3000,
+    PORT : 3001,
     NODE_ENV : 'DEVELOPMENT',
     SMTP_HOST : 'smtp.gmail.com',
     SMTP_PORT : 465,
